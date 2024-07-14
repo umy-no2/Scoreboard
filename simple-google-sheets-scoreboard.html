@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>トーナメントスコアボード</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #scoreboard {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-image: url('');
+            background-size: cover;
+            background-position: center;
+        }
+        .info-box {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            background-color: rgb(36, 36, 36);
+            border-radius: 15px;
+            overflow: hidden;
+            padding: 10px;
+        }
+        #round {
+            top: 5px;
+            right: 0;
+            left: 0;
+            margin: 0 auto;
+            width: 160px;
+            height: 12px;
+        }
+        #titlenumber {
+            top: 135px;
+            right: 0;
+            left: 0;
+            margin: 0 auto;
+            width: 40px;
+            height: 7px;
+        }
+        #player1, #player2 {
+            top: 7px;
+            width: 400px;
+            height: 25px;
+        }
+        #player1 {
+            left: 250px;
+        }
+        #player2 {
+            right: 250px;
+        }
+        #score1, #score2 {
+            top: 2px;
+            width: 40px;
+            height: 35px;
+        }
+        #score1 {
+            left: 675px;
+        }
+        #score2 {
+            right: 675px;
+        }
+        #seed1, #seed2 {
+            top: 2px;
+            width: 90px;
+            height: 5px;
+        }
+        #seed1 {
+            left: 745px;
+        }
+        #seed2 {
+            right: 745px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="scoreboard">
+        <div id="round" class="info-box"><span></span></div>
+        <div id="titlenumber" class="info-box"><span></span></div>
+        <div id="player1" class="info-box"><span></span></div>
+        <div id="player2" class="info-box"><span></span></div>
+        <div id="score1" class="info-box"><span></span></div>
+        <div id="score2" class="info-box"><span></span></div>
+        <div id="seed1" class="info-box"><span></span></div>
+        <div id="seed2" class="info-box"><span></span></div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbycxwYJb_PCGX2e5LsS6aWxTB_vG6oQetW2SaJIh8Fzacqo1OGU6iTq-opC4QZqbp0n0w/exec';
+
+        function fetchData() {
+            fetch(SCRIPT_URL)
+                .then(response => response.json())
+                .then(data => {
+                    updateScoreboard(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function updateScoreboard(data) {
+            for (const [key, value] of Object.entries(data)) {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.querySelector('span').textContent = value;
+                    adjustFontSize(element);
+                }
+            }
+        }
+
+        function adjustFontSize(element) {
+            const span = element.querySelector('span');
+            let fontSize = 100;
+            span.style.fontSize = fontSize + 'px';
+
+            while (span.scrollWidth > element.clientWidth || span.scrollHeight > element.clientHeight) {
+                fontSize--;
+                span.style.fontSize = fontSize + 'px';
+                if (fontSize <= 5) break; // 最小フォントサイズ
+            }
+        }
+
+        function adjustAllFontSizes() {
+            document.querySelectorAll('.info-box').forEach(adjustFontSize);
+        }
+
+        // 初期データ取得
+        fetchData();
+
+        // 10秒ごとにデータを更新
+        setInterval(fetchData, 10000);
+
+        // ウィンドウサイズが変更されたときにフォントサイズを再調整
+        window.addEventListener('resize', adjustAllFontSizes);
+    </script>
+</body>
+</html>
