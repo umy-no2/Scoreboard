@@ -108,7 +108,7 @@
         }
 
         function fetchData() {
-            const { tournamentId, discordId } = getUrlParams();
+            const { discordId } = getUrlParams();
             fetch(`${SCRIPT_URL}?id=${discordId}`)
                 .then(response => response.json())
                 .then(data => {
