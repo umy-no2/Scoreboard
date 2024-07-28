@@ -169,8 +169,13 @@
             element.style.fontSize = high + 'px';
         }
 
+        document.getElementById('tournamentSelector').addEventListener('change', (event) => {
+            currentTournamentId = event.target.value;
+            fetchData();
+        });
+
         // 初期データ取得
-        fetchData();
+        fetchTournaments();
 
         // 10秒ごとにデータを更新
         setInterval(fetchData, 10000);
