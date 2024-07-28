@@ -98,19 +98,18 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUNwsiN6jInGDPNa2sassWDQqvADTGjsLR36ra7gRWwvbHN9J_sKEKvZaZRUURSHFkEw/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby9cVUo5wOc4v1SxgYefKJ_1YGWsvHM-hBtVpe5p4TZj4dYL0jzY2Ckxqw_ZENWDsBB/exec';
 
         function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
-                tournamentId: params.get('id'),
                 discordId: params.get('discordId')
             };
         }
 
         function fetchData() {
             const { tournamentId, discordId } = getUrlParams();
-            fetch(`${SCRIPT_URL}?id=${tournamentId}&discordId=${discordId}`)
+            fetch(`${SCRIPT_URL}?id=${discordId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
