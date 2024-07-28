@@ -98,18 +98,20 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby9cVUo5wOc4v1SxgYefKJ_1YGWsvHM-hBtVpe5p4TZj4dYL0jzY2Ckxqw_ZENWDsBB/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgXSdOpdw_ogi6NB7DqqdJ9ylppZ_SjWRsWjXnaUVabLhDKUfyTAzhnyn7IuD_epMPHw/exec';
 
-        function getUrlParams() {
+        function getDiscordId() {
             const params = new URLSearchParams(window.location.search);
-            return {
-                discordId: params.get('discordId')
-            };
+            return params.get('discordId');
         }
 
         function fetchData() {
-            const { discordId } = getUrlParams();
-            fetch(`${SCRIPT_URL}?id=${discordId}`)
+            const discordId = getDiscordId();
+            if (!discordId) {
+                console.error('Error: Discord ID not provided');
+                return;
+            }
+            fetch(`${SCRIPT_URL}?discordId=${discordId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
