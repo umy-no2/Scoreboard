@@ -136,7 +136,23 @@
         }
 
         function adjustFontSize(element) {
-            // 既存のadjustFontSize関数をここに維持
+            const maxSize = 100;
+            const minSize = 10;
+            let low = minSize;
+            let high = maxSize;
+
+            while (low <= high) {
+                let mid = Math.floor((low + high) / 2);
+                element.style.fontSize = mid + 'px';
+
+                if (element.scrollWidth <= element.offsetWidth && element.scrollHeight <= element.offsetHeight) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
+            }
+
+            element.style.fontSize = high + 'px';
         }
 
         fetchData();
