@@ -98,65 +98,50 @@
     </div>
 
     <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOYYXQnF_UFjuV0p0re_9WyqvTKboYRbsg1iTzY0wzvy3WcgeuBzskjPOKnAnIY700rA/exec';
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyUNwsiN6jInGDPNa2sassWDQqvADTGjsLR36ra7gRWwvbHN9J_sKEKvZaZRUURSHFkEw/exec';
 
-        // URLパラメータを解析する関数
-        function getUrlParameters() {
+        function getUrlParams() {
             const params = new URLSearchParams(window.location.search);
             return {
-                sheetId: params.get('sheetId') || '',
-                round: params.get('round') || 'Round',
-                titlenumber: params.get('titlenumber') || 'Title',
-                player1: params.get('player1') || 'Player 1',
-                player2: params.get('player2') || 'Player 2',
-                score1: params.get('score1') || 'Score 1',
-                score2: params.get('score2') || 'Score 2',
-                seed1: params.get('seed1') || 'Seed 1',
-                seed2: params.get('seed2') || 'Seed 2'
+                tournamentId: params.get('id'),
+                discordId: params.get('discordId')
             };
         }
 
         function fetchData() {
-            const params = getUrlParameters();
-            fetch(`${SCRIPT_URL}?sheetId=${params.sheetId}`)
+            const { tournamentId, discordId } = getUrlParams();
+            fetch(`${SCRIPT_URL}?id=${tournamentId}&discordId=${discordId}`)
                 .then(response => response.json())
                 .then(data => {
-                    updateScoreboard(data, params);
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                    } else {
+                        updateScoreboard(data);
+                    }
                 })
                 .catch(error => console.error('Error:', error));
         }
 
-        function updateScoreboard(data, params) {
-            const elements = ['round', 'titlenumber', 'player1', 'player2', 'score1', 'score2', 'seed1', 'seed2'];
-            elements.forEach(key => {
-                const element = document.getElementById(key);
-                if (element) {
-                    if (key === 'player1' || key === 'player2') {
-                        const temeColor = '#FFD700'; // 金色
-                        const nameColor = '#FFFFFF'; // 白色
-                        const teme = key === 'player1' ? data.teme1 : data.teme2;
-                        const name = key === 'player1' ? data.name1 : data.name2;
-                        element.innerHTML = `<span style="color: ${temeColor}">${teme || ''}</span> <span style="color: ${nameColor}">${name || ''}</span>`;
-                    } else {
-                        element.textContent = data[key] || params[key];
-                    }
-                    adjustFontSize(element);
-                }
-            });
+        function updateScoreboard(data) {
+            document.getElementById('round').textContent = data.round;
+            document.getElementById('titlenumber').textContent = data.titlenumber;
+            document.getElementById('player1').innerHTML = `<span style="color: #FFD700">${data.teme1}</span> <span style="color: #FFFFFF">${data.name1}</span>`;
+            document.getElementById('player2').innerHTML = `<span style="color: #FFD700">${data.teme2}</span> <span style="color: #FFFFFF">${data.name2}</span>`;
+            document.getElementById('score1').textContent = data.score1;
+            document.getElementById('score2').textContent = data.score2;
+            document.getElementById('seed1').textContent = data.seed1;
+            document.getElementById('seed2').textContent = data.seed2;
+
+            document.querySelectorAll('.info-box').forEach(adjustFontSize);
         }
 
         function adjustFontSize(element) {
             // 既存のadjustFontSize関数をここに維持
-            // ...
         }
 
-        // 初期データ取得
         fetchData();
-
-        // 10秒ごとにデータを更新
         setInterval(fetchData, 10000);
 
-        // ウィンドウサイズが変更されたときにフォントサイズを再調整
         window.addEventListener('resize', () => {
             document.querySelectorAll('.info-box').forEach(adjustFontSize);
         });
